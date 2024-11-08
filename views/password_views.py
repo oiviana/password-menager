@@ -1,4 +1,6 @@
 import string, secrets
+import hashlib
+import base64
 
 class FernetHasher:
     RANDOM_STRING_CHARS = string.ascii_lowercase + string.ascii_uppercase
@@ -8,9 +10,16 @@ class FernetHasher:
         string = ''
         for i in range(25):
            string += secrets.choice(cls.RANDOM_STRING_CHARS)
-           print(string)
-           
+
         return string
+    
+    @classmethod
+    def create_key(cls):
+        keyValue = cls._get_random_string()
+        hasher = hashlib.sha256(keyValue.encode('utf-8')).digest()
+        key = base64.b64encode(hasher)
+        print(key)
 
+FernetHasher.create_key()
 
-FernetHasher._get_random_string()
+# 00:39:13
