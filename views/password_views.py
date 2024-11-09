@@ -63,6 +63,3 @@ class FernetHasher:
                 return self.fernet.decrypt(value).decode()
             except InvalidToken as e:
                 return 'Token inválido'
-
-fernet_viana = FernetHasher('Wsqej49VfLBpiZAC8aegXxastU4sr/HplUXZsuHHtzY=')
-print(fernet_viana.decrypt('gAd'))
