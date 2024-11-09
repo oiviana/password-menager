@@ -2,6 +2,7 @@ import string, secrets
 import hashlib
 import base64
 from pathlib import Path
+from cryptography.fernet import Fernet, InvalidToken
 
 class FernetHasher:
     RANDOM_STRING_CHARS = string.ascii_lowercase + string.ascii_uppercase
@@ -9,6 +10,14 @@ class FernetHasher:
     # indo até a raiz do projeto
     BASE_DIR = Path(__file__).resolve().parent.parent 
     KEY_DIR = BASE_DIR / 'keys'
+
+    # método para instanciar uma nova classe
+    def __init__(self, key):
+        if not isinstance(key, bytes):
+            key = key.encode()
+        
+        self.fernet = Fernet(key)
+
     @classmethod
     def _get_random_string(cls, length=25):
         string = ''
@@ -41,5 +50,19 @@ class FernetHasher:
 
         return cls.KEY_DIR / file
 
-FernetHasher.create_key(archive=True)
+    def encrypt(self, value):
+           if not isinstance(value, bytes):
+            value = value.encode()
+            return self.fernet.encrypt(value)
+           
+    def decrypt(self, value):
+            if not isinstance(value, bytes):
+             value = value.encode()
 
+            try:
+                return self.fernet.decrypt(value).decode()
+            except InvalidToken as e:
+                return 'Token inválido'
+
+fernet_viana = FernetHasher('Wsqej49VfLBpiZAC8aegXxastU4sr/HplUXZsuHHtzY=')
+print(fernet_viana.decrypt('gAd'))
